@@ -1,6 +1,6 @@
 import {initialCards} from './scripts/initialCards.js';
-import {openModal,closeModal} from './scripts/modal.js'
-import {addCards} from './scripts/card.js'
+import {openModal,closeModal, closeModalByOverlay} from './scripts/modal.js'
+import {renderInitialCards} from './scripts/card.js'
 import './pages/index.css';
 
 
@@ -16,6 +16,9 @@ const descriptionInput = popupProfile.querySelector('.popup__input_name_about');
 const linkCardInput = popupCards.querySelector('.popup__input_name_about');
 const cardsArea = document.querySelector('.cards');
 const closeButtons = document.querySelectorAll('.popup__close-button');
+const popupImageZoom = document.querySelector('#image-popup');
+const popupImageZoomDescription = popupImageZoom.querySelector('.popup__description');
+const popupImageZoomImage = popupImageZoom.querySelector('.popup__image');
 
 const openPopupProfile = function () {
   nameInput.value = profileName.textContent;
@@ -23,20 +26,35 @@ const openPopupProfile = function () {
   openModal(popupProfile);
 }
 
+const openImagePopup = (imageSrc, imageAlt, imageTitle) => {
+  popupImageZoomImage.src = imageSrc;
+  popupImageZoomImage.alt = imageAlt;
+  popupImageZoomDescription.textContent = imageTitle;
+  openModal(popupImageZoom);
+};
+
+const likeCard = function(evt){
+  evt.target.classList.toggle('cards__like_active');
+}
+
+const deleteCard = function(evt){
+  evt.target.closest('.cards__item').remove();
+}
+
+initialCards.forEach((card) =>
+renderInitialCards(card, cardsArea, likeCard, deleteCard, openImagePopup),
+);
+
 const addNewCard = function (evt) {
   evt.preventDefault();
-  cardsArea.prepend(addCards(nameCardInput.value, linkCardInput.value));
+  const name = nameCardInput.value;
+  const link = linkCardInput.value
+  const description = name;
+  const card = {name, link, description};
+  renderInitialCards(card, cardsArea, likeCard, deleteCard, openImagePopup);
   evt.target.reset()
   closeModal(popupCards);
 }
-
-const renderInitialCards = function () {
-  initialCards.forEach(function (card) {
-    cardsArea.append(addCards(card.name, card.link));
-  });
-}
-
-renderInitialCards();
 
 const handleProfileFormSubmit = function (evt) {
   evt.preventDefault();
@@ -55,3 +73,5 @@ closeButtons.forEach((button) => {
 
 popupProfile.addEventListener('submit', handleProfileFormSubmit);
 popupCards.addEventListener('submit', addNewCard);
+
+document.addEventListener('click', closeModalByOverlay);

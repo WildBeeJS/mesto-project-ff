@@ -15,6 +15,12 @@ export const closeModal = function (popupName) {
     document.removeEventListener('keydown', escapeListener);
 }
 
+export const closeModalByOverlay  = function(evt){
+    if (evt.target.classList.contains('popup_opened')){
+        closeModal(evt.target)
+    }
+}
+
 document.addEventListener('click', function(evt){
     if (evt.target.classList.contains('popup_opened')){
     closeModal(evt.target)
