@@ -1,6 +1,8 @@
 import { deleteLike, putLike } from "./api.js";
+import {openModal} from '../scripts/modal.js'
 
 const contentCardTemplate = document.querySelector('#card-template').content;
+const popupConfirm = document.querySelector(".popup_type_confirm");
 
 export const likeCard = (evt, cardId) => {
     const currentLikes = evt.target.parentNode.querySelector(".element__like-count");
@@ -64,6 +66,11 @@ const createCard = function (card, userId, deleteCard, likeCard, zoomCard) {
 
     return copyCardTemplate;
 }
+
+export const deleteCard = (evt, cardId) => {
+    openModal(popupConfirm);
+    popupConfirm.dataset.cardId = cardId;
+};
 
 export const renderInitialCards = function (card, userId, container, likeCard, deleteCard, zoomCard) {
     const newCard = createCard(card,userId, deleteCard, likeCard, zoomCard);
